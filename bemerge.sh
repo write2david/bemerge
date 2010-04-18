@@ -10,7 +10,7 @@ compile() {
 	echo ""
 	echo "  Welcome to *bemerge*"
 	echo ""
-	einfo "Running:  emerge ${*} ...\n"
+	einfo "Running:  emerge --keep-going=True --jobs=2 ${*} ...\n"
 	# Run the emerge command, with two additional options
 	emerge --keep-going=True --jobs=2 ${*}
 }
@@ -20,7 +20,9 @@ notice() {
                 # String all these lines/commands together with "&&" so that if the user hits Ctrl-C anytime during the post-emerge process, then the whole post-emerge process dies.  But this method doesn't work on lines that have pipes  ("|") and so don't use it on those lines.
 		einfo "Clean up: remove non-English/French locale files & remove unneeded Portage install files..."
                 localepurge | grep freed
-		eclean-dist && \
+		#
+		# -d is not too destructive and without it you can have lots of unneccesary source code install files building up
+		eclean-dist -d && \
 		#
 		einfo "Updating list of modules provided by ebuilds..." && \
 		# From: http://www.gentoo.org/doc/en/kernel-upgrade.xml#doc_chap6
