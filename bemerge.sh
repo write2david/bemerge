@@ -43,6 +43,7 @@ notice() {
 		einfo "perl-cleaner --all         (for any updates of perl)" && \
 		einfo "java-check-environment     (for any java installs)" && \
 		einfo "eselect                    (for any updates involving choices)" && \
+		einfo "emaint -f all              (system health checks/maintenance)" && \ 
 		einfo "eix-test-obsolete detailed (for checking your /etc/portage files for unused entries)" && \
 		einfo "elogv [or] eread           (review elog messages for newly installed packages)" && \
 		einfo "mysql_upgrade -p           (for any mySQL program upgrades -- then restart mysqld)" && \
@@ -65,6 +66,8 @@ notice() {
 		einfo "The following *in-use* files have been DELETED while emerge ran." && \
 		einfo "You may want to restart related programs (if none are listed, then nothing to worry about)..." && \
 		[ -f /usr/bin/lsof ] && lsof | grep 'DEL.*lib' | cut -f 1 -d ' ' | sort -u 
+		# requires the checkrestart package to be installed:
+		checkrestart
 		einfo "" 
 		einfo ""
 	}
