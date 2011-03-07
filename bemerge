@@ -10,7 +10,8 @@ compile() {
 	echo ""
 	echo "  Welcome to *bemerge*"
 	echo ""
-	einfo "Running:  emerge --keep-going=y --jobs=2 ${*} ...\n"
+	# Adding '--with-bdeps' because of http://bugs.gentoo.org/show_bug.cgi?id=357059
+	einfo "Running:  emerge --with-bdeps --keep-going=y --jobs=2 ${*} ...\n"
 
 	if [ -f /usr/bin/time ]
 		then
@@ -62,8 +63,7 @@ notice() {
 		einfo "emerge -1av \$(qlist -IC x11-drivers/)   (rebuild drivers after xorg-sever upgrade)" && \
 		#
 		echo "" && \
-		#	The next line came from content on:  http://www.gentoo.org/doc/en/gcc-upgrading.xml
-		einfo "If you've upgraded GCC, then do:"
+		einfo "If you've upgraded GCC, then do  (from gentoo.org/doc/en/gcc-upgrading.xml):"
 		echo "     gcc-config i686-pc-linux-gnu-X.X.X   (substitute new version for X.X.X)" && \
 		echo "     env-update && source /etc/profile" && \
 		echo "     emerge -1av libtool && emerge -eav system && emerge -eav world" && \
