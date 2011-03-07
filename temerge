@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Modified from:  http://en.gentoo-wiki.com/wiki/Portage_TMPDIR_on_tmpfs
+
+. /etc/init.d/functions.sh
+
+
+compile() {
+	echo ""
+	echo "  Welcome to *temerge*"
+	echo ""
+	einfo "  I'll tell 'bemerge' to build packages in a RAM disk..."
+	echo
+	echo
+	#
+	mkdir /var/tmp/tmp-portage  >/dev/null 2>&1
+	#
+	# If /var/tmp/tmp-portage is not mounted already, then mount it:
+	if [ -z "$(mount | grep /var/tmp/tmp-portage)" ];then
+		mount -t tmpfs -o nr_inodes=1M none /var/tmp/tmp-portage
+	fi
+	#
+	# Run the emerge command, with two additional options
+	PORTAGE_TMPDIR=/var/tmp/tmp-portage bemerge ${*}
+	umount /var/tmp/tmp-portage  >/dev/null 2>&1
+
+}
+
+
+# Run temerge
+compile $@
