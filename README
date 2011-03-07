@@ -3,6 +3,10 @@ bemerge is a wrapper script for the "emerge" command on Gentoo.
 
 It's job is to automatically do some helpful tasks each time you run emerge, as well as remind you of some system management tasks you may want to do manually.
 
+Another tool  ('temerge')  calls 'bemerge' but sets up a RAM disk so that package building is done in memory, rather than on your hard drive.  For more info, see http://en.gentoo-wiki.com/wiki/Portage_TMPDIR_on_tmpfs
+
+
+
 
 Sample output:
 
