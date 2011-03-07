@@ -11,11 +11,16 @@ compile() {
 	echo "  Welcome to *bemerge*"
 	echo ""
 	# Adding '--with-bdeps' because of http://bugs.gentoo.org/show_bug.cgi?id=357059
-	einfo "Running:  emerge --with-bdeps --keep-going=y --jobs=2 ${*} ...\n"
+	# Make sure the next line matches up with the actual emerge command, that is, the line that starts with "/usr/bin/time"
+	einfo "Running:  emerge --with-bdeps=y --keep-going=y --jobs=2 ${*} ...\n"
 
 	if [ -f /usr/bin/time ]
 		then
-			/usr/bin/time -f "\n\nEMERGE TOTALS...  Time: %E.  Avg CPU: %P.  Avg memory use: %KK" emerge --keep-going=True --jobs=3 ${*}
+			/usr/bin/time -f "\n\nEMERGE TOTALS...  Time used: %E  /  Avg CPU usage: %P  /  Max memory usage: %MK" emerge --with-bdeps=y --keep-going=y --jobs=2 ${*}
+
+	# The 'time' command used to also include "  /  Avg memory use: %KK" until I realized that the value was always shown as "0"
+	# The reason for this, as confirmed from other websites, is listed in the time man page (http://linux.die.net/man/1/time):
+	# "Not all resources are measured by all versions of Unix, so some of the values might be reported as zero. The present selection was mostly inspired by the data provided by 4.2 or 4.3BSD."
 		else
 			echo "/usr/bin/time not found, exiting." && exit
 	fi
@@ -39,25 +44,24 @@ notice() {
 		#
 		einfo "Updating list of kernel modules provided by installed packages..." && \
 		# From: http://www.gentoo.org/doc/en/kernel-upgrade.xml#doc_chap6
-		# must emerge module-rebuild for this to work
+		# next line requires package "module-rebuild"
 		[ -f /usr/sbin/module-rebuild ] && module-rebuild populate > /dev/null && \
 		echo "" && \
 		echo "" &&\
 		einfo "You may also want to run:" && \
 		einfo "" && \
-		einfo "revdep-rebuild -- -av      (reverse dependency check)" && \
 		einfo "dispatch-conf | etc-update (update configuration files)" && \
+		einfo "revdep-rebuild -- -av      (reverse dependency check)" && \
 		einfo "module-rebuild rebuild     (rebuild kernel modules provided by ebuilds)" && \
-		einfo "emerge --prune -av         (remove old versions from multiple-slots" && \
-		einfo "emerge --depclean -av      (remove packages not needed anymore)" && \
-		einfo "python-updater             (for any updates of python)" && \
-		einfo "perl-cleaner --all         (for any updates of perl)" && \
-		einfo "java-check-environment     (for any java installs)" && \
-		einfo "eselect                    (for any updates involving choices)" && \
+		einfo "emerge --prune -av         (remove old versions from multiple-slots)" && \
+		einfo "emerge --depclean -av      (remove packages not required anymore)" && \
+		einfo "eselect                    (for certain updates requiring choices)" && \
 		einfo "emaint -f all              (system health checks and fixes)" && \
 		einfo "eix-test-obsolete detailed (for checking your /etc/portage files for unused entries)" && \
-		einfo "elogv [or] eread           (review elog messages for newly installed packages)" && \
-		einfo "mysql_upgrade -p           (for any mySQL program upgrades -- then restart mysqld)" && \
+		einfo "python-updater             (for any python installs)" && \
+		einfo "perl-cleaner --all         (for any perl installs)" && \
+		einfo "java-check-environment     (for any java installs)" && \
+		einfo "mysql_upgrade -p           (for any mySQL upgrades -- then restart mysqld)" && \
 		#
 		# next line requires package "portage-utils"
 		einfo "emerge -1av \$(qlist -IC x11-drivers/)   (rebuild drivers after xorg-sever upgrade)" && \
@@ -68,11 +72,6 @@ notice() {
 		echo "     env-update && source /etc/profile" && \
 		echo "     emerge -1av libtool && emerge -eav system && emerge -eav world" && \
 		echo "     (then remove the old version of GCC)" && \
-		echo "" && \
-		einfo "Occasionally, run this:  'emerge -DavuNt1e world'" && \
-		echo  "   This shows what upgrades have been missed when doing a world upgrade" && \
-		echo  "   (which may also prohibit 'emerge --prune |--depclean' from working" &&\
-		echo "" && \
 		echo "" && \
 		#
 		# From: http://www.gentoo.org/news/en/gmn/20080930-newsletter.xml#doc_chap4_sect3
@@ -87,7 +86,7 @@ notice() {
 		fi && \
 		# requires the checkrestart package to be installed:
 		echo ""
-		einfo "If there are any init scripts for these, they are here:" && \
+		einfo "If any of these can be restarted with an \"init script,\" they are listed below:" && \
 		checkrestart| sed -n "/^These are the init scripts/,/These processes do not seem/p" | grep -v "These processes" | grep -v "These are the init"
 		echo ""
 	}
