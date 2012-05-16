@@ -14,7 +14,7 @@ bemerge -DavuNt world
 
   Welcome to *bemerge*
 
- * Running:  emerge --keep-going=y --jobs=2 -DavuNt --with-bdeps y world ...
+ * Running:  emerge --keep-going=y -DavuNt --with-bdeps y world ...
 
 
 These are the packages that would be merged, in reverse order:

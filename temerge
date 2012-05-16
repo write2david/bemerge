@@ -22,6 +22,7 @@ compile() {
 	#
 	# Run the emerge command, with two additional options
 	PORTAGE_TMPDIR=/var/tmp/tmp-portage bemerge ${*}
+	sleep 3
 	umount /var/tmp/tmp-portage  >/dev/null 2>&1
 
 }
